@@ -9,7 +9,10 @@ Package.describe({
 Package.onUse(function(api) {
   api.versionsFrom('1.1.0.2');
   api.use('iron:router@1.0.0');
+  api.use('accounts-base');
+  api.use('jparker:crypto-sha1')
   api.addFiles('keypler.js');
+  api.export('Keypler', 'server')
 });
 
 Package.onTest(function(api) {
