@@ -2,6 +2,8 @@
 
 Automated API & License key generation, for Meteor!
 
+**Warning** Keypler is still in development and not completely finished. When it is, this message will be gone and Keypler will be available on Atmosphere.
+
 ## Usage
 
 In the server's code, simply add `var keypler = new Keypler()` to instantiate Keypler. You can pass a configuration object - we'll document that more later.
