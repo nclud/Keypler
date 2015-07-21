@@ -1,6 +1,7 @@
+
 if(Meteor.isServer){
 
-	function Keypler(configObj){
+	Keypler = function(configObj){
 		/*configObj's defaults
 
 		{
@@ -60,46 +61,49 @@ if(Meteor.isServer){
 			return user;
 		})
 
+
+		Router.route('/keypler_verify', function(){
+			/*
+				POST request with JSON body
+				key `email` has user's email
+				key `license` has license
+				response: 
+					202 if the key is verified
+					400 if it's not a POST request
+					401 if the key doesn't match
+
+			*/
+			var req = this.request;
+			var res = this.response;
+			
+
+			if(req.method !== "POST"){
+				res.writeHead(400, {'Content-Type': 'text/plain'});
+				res.write("Bad request");
+				return res.end();
+			}
+
+				
+			// res.status(200).send('A+').end();
+			var userQuery = Meteor.users.findOne({'emails.0.address': req.body.email, 'services.keypler.license': req.body.license});
+			if(userQuery.services.keypler.license !== null){//they have a license
+				res.writeHead(202, {'Content-Type': 'text/plain'});
+				res.write("Everything checks out, boss");
+				console.log(req.body)
+				return res.end();	
+			}
+			
+
+			res.writeHead(401, {'Content-Type': 'text/plain'});
+			res.write("This user's key is invalid!");
+			res.end();
+
+		},
+		{where: 'server'})	
+
 	};
 
-	Router.route('/keypler_verify', function(){
-		/*
-			POST request with JSON body
-			key `email` has user's email
-			key `license` has license
-			response: 
-				202 if the key is verified
-				400 if it's not a POST request
-				401 if the key doesn't match
 
-		*/
-		var req = this.request;
-		var res = this.response;
-		
-
-		if(req.method !== "POST"){
-			res.writeHead(400, {'Content-Type': 'text/plain'});
-			res.write("Bad request");
-			return res.end();
-		}
-
-			
-		// res.status(200).send('A+').end();
-		var userQuery = Meteor.users.findOne({'emails.0.address': req.body.email, 'services.keypler.license': req.body.license});
-		if(userQuery.services.keypler.license !== null){//they have a license
-			res.writeHead(202, {'Content-Type': 'text/plain'});
-			res.write("Everything checks out, boss");
-			console.log(req.body)
-			return res.end();	
-		}
-		
-
-		res.writeHead(401, {'Content-Type': 'text/plain'});
-		res.write("This user's key is invalid!");
-		res.end();
-
-	},
-	{where: 'server'})
 
 	// Keypler.HMACKey = "RazzleFrazzle";
 
