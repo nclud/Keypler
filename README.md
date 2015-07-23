@@ -31,9 +31,9 @@ To authenticate a user, send a `POST` request to `http://your.meteor.app/keypler
 
 ```JSON
 {
-	email: userEmail,
-	id: userId,
-	license: userLicense
+	"email": "userEmail",
+	"id": "userId",
+	"license": "userLicense"
 }
 ```
 
