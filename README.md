@@ -6,7 +6,9 @@ Automated API & License key generation, for Meteor!
 
 ## Usage
 
-In the server's code, simply add `var keypler = new Keypler(options)` to instantiate Keypler. See the **Configuration** section for details on how to use `options`.
+In the server's code, simply add `var yourKeypler = new Keypler(options)` to instantiate Keypler. See the **Configuration** section for details on how to use `options`.
+
+To generate a new license, call `yourKeypler.generateLicense(userId)`. For security purposes, this method, along with the `Keypler` object, is only available on the server side.
 
 ## Configuration
 

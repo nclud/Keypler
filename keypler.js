@@ -37,27 +37,23 @@ if(Meteor.isServer){
 
 		var keyplerThis = this;
 
-		Meteor.methods({
-			generateLicense: function(userId){//todo, add some verification so people can't run `Meteor.call('generateLicense')` from client side
-				//idea: give users a separate, hidden ID, and update based on that id, so only the server can know which user is being updated
-				//alternately, check for permission with this.userId
+		this.generateLicense = function(userId){
 
-				var user = Meteor.users.findOne({_id: userId})
+			var user = Meteor.users.findOne({_id: userId})
 
-				if(user && user.services && user.services.keypler && user.services.keypler.license)
-					return false;
+			if(user && user.services && user.services.keypler && user.services.keypler.license)
+				return false;
 
-				Meteor.users.update({_id: userId}, {$set:{'services.keypler.license': keyplerThis.makeLicense(userId)}})
+			Meteor.users.update({_id: userId}, {$set:{'services.keypler.license': keyplerThis.makeLicense(userId)}})
 
 
-				return Meteor.users.findOne({_id: userId}, {
-					fields: {
-						_id: 1,
-						'services.keypler.license': 1
-					}
-				})
-			}
-		})
+			return Meteor.users.findOne({_id: userId}, {
+				fields: {
+					_id: 1,
+					'services.keypler.license': 1
+				}
+			})
+		}
 
 		if(this.publish === undefined || this.publish)
 			Meteor.publish('_keypler_userKey', function(){
