@@ -5,7 +5,10 @@ if(Meteor.isServer){
 		/*configObj's defaults
 
 		{
-			publish: true
+			publish: true,
+			makeLicense: function(userId){
+				//returns a license based off of a userId, default returns a SHA of the id plus the timestamp multiplied by math.random
+			}
 		}
 
 
@@ -14,9 +17,10 @@ if(Meteor.isServer){
 		for(key in configObj)
 			this[key] = configObj[key]
 
-		this.makeLicense = function(userId){
-			return CryptoJS.SHA1(userId + Date.now() * Math.random()).toString();
-		}
+		if(!this.makeLicense)		
+			this.makeLicense = function(userId){
+				return CryptoJS.SHA1(userId + Date.now() * Math.random()).toString();
+			}
 
 
 		Meteor.methods({
@@ -73,6 +77,7 @@ if(Meteor.isServer){
 					401 if the key doesn't match
 
 			*/
+
 			var req = this.request;
 			var res = this.response;
 			
