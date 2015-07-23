@@ -12,14 +12,13 @@ if(Meteor.isServer){
 			licenseType: "sha" | "guid"//only to be set if makeLicense is not defined - as a note, the guid makeLicense function does not actually use the userId
 		}
 
-
 		*/
 
 		for(key in configObj)
 			this[key] = configObj[key]
 
 
-		if(!this.makeLicense){
+		if(!this.makeLicense){//configure the makeLicense function, if it hasn't been defined yet
 
 			if(!this.licenseType)
 				this.licenseType = "sha"
@@ -35,7 +34,6 @@ if(Meteor.isServer){
 
 		}
 
-		var keyplerThis = this;
 
 		this.generateLicense = function(userId){
 
@@ -44,7 +42,7 @@ if(Meteor.isServer){
 			if(user && user.services && user.services.keypler && user.services.keypler.license)
 				return false;
 
-			Meteor.users.update({_id: userId}, {$set:{'services.keypler.license': keyplerThis.makeLicense(userId)}})
+			Meteor.users.update({_id: userId}, {$set:{'services.keypler.license': this.makeLicense(userId)}})
 
 
 			return Meteor.users.findOne({_id: userId}, {
