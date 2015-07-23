@@ -13,7 +13,7 @@ Keypler will automatically give each new user a `services.keypler` field, which 
 ## Todo
 
 * Configuration to use SendGrid's webhooks or GumRoad's
-* Let user customize authentication key's charset & length
+* ~~Let user customize authentication key's charset & length~~
 * Ability to generate multiple, distinguishable, keys per user
 * ~~Ability to customize key's value, rather than set from `_id`~~
 * Update docs

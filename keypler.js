@@ -8,7 +8,8 @@ if(Meteor.isServer){
 			publish: true,
 			makeLicense: function(userId){
 				//returns a license based off of a userId, default returns a SHA of the id plus the timestamp multiplied by math.random
-			}
+			},
+			licenseType: "sha" | "guid"//only to be set if makeLicense is not defined - as a note, the guid makeLicense function does not actually use the userId
 		}
 
 
@@ -17,10 +18,21 @@ if(Meteor.isServer){
 		for(key in configObj)
 			this[key] = configObj[key]
 
-		if(!this.makeLicense)		
-			this.makeLicense = function(userId){
-				return CryptoJS.SHA1(userId + Date.now() * Math.random()).toString();
-			}
+
+		if(!this.makeLicense){
+
+			if(!this.licenseType)
+				this.licenseType = "sha"
+
+			if(this.licenseType.toLowerCase() == "sha")
+				this.makeLicense = function(userId){
+					return CryptoJS.SHA1(userId + Date.now() * Math.random()).toString();
+				}
+			else
+				this.makeLicense = function(userId){
+					return uuid.v4();
+				}
+		}
 
 
 		Meteor.methods({
