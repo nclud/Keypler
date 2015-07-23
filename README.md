@@ -27,4 +27,3 @@ Keypler will automatically give each new user a `services.keypler` field, which 
 
 * Configuration to use SendGrid's webhooks or GumRoad's
 * Ability to generate multiple, distinguishable, keys per user
-* Add more secure way to generate license, so users can't just run `Meteor.call('generateLicense', userId)` and magically have a license.
