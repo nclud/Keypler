@@ -24,14 +24,15 @@ if(Meteor.isServer){
 			if(!this.licenseType)
 				this.licenseType = "sha"
 
-			if(this.licenseType.toLowerCase() == "sha")
+			if(this.licenseType.toLowerCase() == "guid")
+				this.makeLicense = function(userId){
+					return uuid.v4();
+				}				
+			else
 				this.makeLicense = function(userId){
 					return CryptoJS.SHA1(userId + Date.now() * Math.random()).toString();
 				}
-			else
-				this.makeLicense = function(userId){
-					return uuid.v4();
-				}
+
 		}
 
 
@@ -53,7 +54,7 @@ if(Meteor.isServer){
 			}
 		})
 
-		if(!configObj || configObj.publish)
+		if(this.publish === undefined || this.publish)
 			Meteor.publish('_keypler_userKey', function(){
 
 				return Meteor.users.find({_id: this.userId}, {fields: 
@@ -69,7 +70,7 @@ if(Meteor.isServer){
 				user.services = {};
 
 			user.services.keypler = {};
-			user.services.keypler.license = null;
+			user.services.keypler.license = {};
 
 			if(options.profile)
 				user.profile = options.profile;
@@ -103,11 +104,11 @@ if(Meteor.isServer){
 				
 			// res.status(200).send('A+').end();
 			var userQuery = Meteor.users.findOne({'emails.0.address': req.body.email, 'services.keypler.license': req.body.license});
-			if(userQuery.services.keypler.license !== null){//they have a license
+			if(userQuery && userQuery.services && userQuery.services.keypler && userQuery.services.keypler.license){//they have a license
 				res.writeHead(202, {'Content-Type': 'text/plain'});
 				res.write("Everything checks out, boss");
-				console.log(req.body)
-				return res.end();	
+				
+				return res.end();
 			}
 			
 
