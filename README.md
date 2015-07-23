@@ -37,7 +37,7 @@ To authenticate a user, send a `POST` request to `http://your.meteor.app/keypler
 }
 ```
 
-The `license` value is mandatory, and you can submit *either* the user's email in the `email` field, or the user's `_id` in the `id` field (No underscore in the `POST` body). 
+The `license` value is mandatory, and you can submit *either* the user's email in the `email` field, or the user's `_id` in the `id` field (No underscore in the `id` field in the `POST` body). 
 
 The route will return a status code of `202` if the user has the license specified in the body of the request. Otherwise, a `401` is returned.
 
