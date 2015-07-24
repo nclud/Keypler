@@ -10,10 +10,12 @@ if(Meteor.isServer){
 				//returns a license based off of a userId, default returns a SHA of the id plus the timestamp multiplied by math.random
 			},
 			licenseType: "sha" | "guid"//only to be set if makeLicense is not defined - as a note, the guid makeLicense function does not actually use the userId,
-			makeRoute: true//whether or not a route is created
+			makeVerificationRoute: true//whether or not a route is created
 		}
 
 		*/
+
+		var self = this;
 
 		for(key in configObj)
 			this[key] = configObj[key]
@@ -71,7 +73,7 @@ if(Meteor.isServer){
 			return user;
 		})
 
-		if(this.makeRoute === undefined || this.makeRoute)
+		if(this.makeVerificationRoute === undefined || this.makeVerificationRoute)
 			Router.route('/keypler_verify', function(){
 				/*
 					POST request with JSON body
@@ -121,7 +123,44 @@ if(Meteor.isServer){
 				res.end();
 
 			},
-			{where: 'server'})	
+			{where: 'server'})
+
+		if(this.makeGumroadRoute)
+			Router.route('/' + (configObj.gumroadRouteName || "keypler_gumroad"), function(){
+				/*
+					POST request with JSON body
+					https://gumroad.com/webhooks
+
+					User matching the user in the `email` field of the post body will get a license
+				*/
+
+				var req = this.request;
+				var res = this.response;
+
+				var userEmail = req.body.email;
+
+				var query = {};
+
+				query['emails.address'] = userEmail;
+
+				var user = Meteor.users.findOne(query);
+
+				if(!user){
+					res.writeHead(400, {'Content-Type': 'text/plain'});
+					res.write("User with email '" + userEmail + "' not found!");
+					return res.end();
+				}
+
+				self.generateLicense(user._id)
+
+				res.writeHead(200, {'Content-Type': 'text/plain'});
+
+				res.write(Meteor.absoluteUrl());
+
+				return res.end();
+
+			},
+			{where: 'server'})
 
 		};
 
